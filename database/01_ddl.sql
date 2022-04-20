@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS order_detail
     id          INT AUTO_INCREMENT PRIMARY KEY,
     user_id     INT,
     total_price DECIMAL(10, 2) DEFAULT NULL,
-    created_at  DATETIME    NOT NULL,
+    created_at  DATETIME NOT NULL,
     CONSTRAINT fk_order_detail
         FOREIGN KEY (user_id)
             REFERENCES user (id)
@@ -61,17 +61,18 @@ CREATE TABLE IF NOT EXISTS order_detail
 
 CREATE TABLE IF NOT EXISTS order_item
 (
-    order_id   INT NOT NULL,
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    order_id   INT,
     product_id INT,
     paid_price DECIMAL(10, 2) DEFAULT NULL,
     quantity   INT,
-    PRIMARY KEY (order_id, product_id),
+    UNIQUE KEY order_index (order_id, product_id),
     CONSTRAINT fk_order_item
         FOREIGN KEY (order_id)
             REFERENCES order_detail (id)
             ON DELETE CASCADE,
-            FOREIGN KEY (product_id)
-            REFERENCES product (id)
+    FOREIGN KEY (product_id)
+        REFERENCES product (id)
 ) ENGINE = InnoDB;
 
 
