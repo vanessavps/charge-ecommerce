@@ -72,7 +72,6 @@ CREATE TABLE IF NOT EXISTS order_item
             ON DELETE CASCADE,
             FOREIGN KEY (product_id)
             REFERENCES product (id)
-            ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
 
