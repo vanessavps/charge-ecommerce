@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")
 public class ProductController {
     private final ProductService productService;
 
@@ -19,13 +18,28 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping
+    @PostMapping("/admin/product")
     public ResponseEntity<Product> create(@RequestBody Product product) {
         Product newProduct = productService.save(product);
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @DeleteMapping("/admin/product/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        productService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/admin/product/{id}")
+    public ResponseEntity<Product> update(@PathVariable Integer id, @RequestBody Product product) {
+        Product updatedProduct = productService.update(id, product);
+        if (updatedProduct != null) {
+            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/product")
     public ResponseEntity<List<Product>> getAll(@RequestParam(required = false) Integer page,
                                                 @RequestParam(required = false) Integer elements) {
         List<Product> products = productService.findAll(page, elements);
@@ -35,26 +49,11 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/product/{id}")
     public ResponseEntity<Product> getById(@PathVariable Integer id) {
         Product product = productService.findById(id);
         if (product != null) {
             return new ResponseEntity<>(product, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
-        productService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Integer id, @RequestBody Product product) {
-        Product updatedProduct = productService.update(id, product);
-        if (updatedProduct != null) {
-            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
